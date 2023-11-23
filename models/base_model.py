@@ -59,7 +59,7 @@ class BaseModel:
     def to_dict(self):
         """Convert instance into dict format"""
         dic = self.__dict__.copy()
-        dic['__class__'] = self.__class.__name__
+        dic['__class__'] = self.__class__.__name__
         dic['created_at'] = self.created_at.isoformat()
         dic['updated_at'] = self.updated_at.isoformat()
         if "_sa_instance_state" in dic:
