@@ -4,13 +4,13 @@ from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 import sqlalchemy
 
-from models.engine.db_storage import Base
-from models.base_model import BaseModel
+import models
+from models.base_model import BaseModel, Base
 from models.city import City
 
 
 class State(BaseModel, Base):
-    if storage_type_db == 'db':
+    if models.storage_type == 'db':
         """
         State ORM
         """
@@ -23,8 +23,8 @@ class State(BaseModel, Base):
         """ State class """
         name = ""
 
-        @property
-        def cities(self):
-            all_cities = list(storage.all(City).values())
-            return list(filter((lambda c: c.state_id == self.id), all_cities))
+    @property
+    def cities(self):
+        all_cities = list(storage.all(City).values())
+        return list(filter((lambda c: c.state_id == self.id), all_cities))
 

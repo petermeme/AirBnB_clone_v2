@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import json
-import os
+from os import getenv
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
@@ -10,6 +10,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from models.base_model import Base
 
 class DBStorage:
     """interaacts with the MySQL database"""

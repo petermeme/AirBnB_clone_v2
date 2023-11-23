@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
+import re
 import sys
+
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -16,14 +18,14 @@ class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
     # determines prompt for interactive/non-interactive modes
-    prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
+    prompt = '(hbnb) '
 
     classes = {
                'BaseModel': BaseModel, 'User': User, 'Place': Place,
                'State': State, 'City': City, 'Amenity': Amenity,
                'Review': Review
               }
-    dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
+    # dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
              'max_guest': int, 'price_by_night': int,
@@ -93,26 +95,28 @@ class HBNBCommand(cmd.Cmd):
         return stop
 
     def do_quit(self, command):
-        """ Method to exit the HBNB console"""
+        """Method to exit the HBNB console"""
         exit()
 
     def help_quit(self):
-        """ Prints the help documentation for quit  """
+        """ Prints the help documentation for quit"""
         print("Exits the program with formatting\n")
 
     def do_EOF(self, arg):
-        """ Handles EOF to exit program """
+        """Handles EOF to exit program"""
         print()
         exit()
 
     def help_EOF(self):
         """ Prints the help documentation for EOF """
         print("Exits the program without formatting\n")
-
+        
     def emptyline(self):
         """ Overrides the emptyline method of CMD"""
         pass
 
+    def do_quit(self, arg):
+        return True
 
     def do_create(self, args):
         """ Create an object of any class"""
@@ -130,8 +134,7 @@ class HBNBCommand(cmd.Cmd):
             if key in class_name.__dict__:
                 value = type(class_name.__dict__[key])(value)
             if type(value) is str:
-                value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-            setattr(new_instance, key, value)
+                value = value[1:len(value) - 1].replace('_', ' ').replace('\\"', '"')
                 
         storage.save()
         print(new_instance.id)
@@ -330,6 +333,23 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
+    """
+    def onecmd(self, line):
+        Override to handle advanced commands
+        if line in ['all', '.all()']:
+            return self.do_all("")
+        pattern = r"([a-zA-Z]*)\.(all|count|show|destroy|update)"
+        match = re.search(pattern, line)
+        if match:
+            klas = match.group(1)
+            if not klas:
+                return print("** class name missing **")
+            elif klas not in self.__classes:
+                return print("** class doesn't exist **")
+            line = self.parse_line(line, klas)
+        return super(HBNBCommand, self).onecmd(line)
+        """
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

@@ -2,14 +2,11 @@
 """ City Module for HBNB project """
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
+import models
+from models.base_model import BaseModel, Base
 
-from models.base_model import BaseModel
-from models.engine.db_storage import Base
-from . import storage_type
-
-
-class City(BaseModel):
-    if models.storage_db == "db":
+class City(BaseModel, Base):
+    if models.storage_type == "db":
 
         __tablename__ = "cities"
         name = Column(String(128), nullable=False)
