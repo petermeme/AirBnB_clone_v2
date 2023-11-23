@@ -36,14 +36,14 @@ class DBStorage:
     def all(self, cls=None):
         """query on the current database session"""
         classes = [State, City, User, Place, Review, Amenity]
-        objs = {}
         if cls:
             objs = self.__session.query(cls).all()
         else:
-            for obj in classes:
-                key = obj.__class__.__name__ + '.' + obj.id
-                objs[key] = obj
-                return (objs)
+            objs = []
+            for res in classes:
+                objs += self.__session.query(res).all()
+        return {(obj.__class__.__name__ + '.' + obj.id): obj
+                for obj in objs}
 
     def new(self, obj):
         """add the object to the current database session"""
