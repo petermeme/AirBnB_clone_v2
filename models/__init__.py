@@ -12,4 +12,4 @@ if storage_type == "db":
 else:
     from .engine.file_storage import FileStorage
     storage = FileStorage()
-storage.reload()
+    storage.reload()

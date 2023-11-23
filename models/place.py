@@ -19,9 +19,9 @@ if models.storage_type == 'db':
                                  nullable = False)
                           )
 
-class Place(BaseModel, Base):
-    """Representation of Place """
-    if models.storage_type == 'db':
+"""Representation of Place """
+if models.storage_type == 'db':
+    class Place(BaseModel, Base):
         __tablename__ = 'places'
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
@@ -38,7 +38,9 @@ class Place(BaseModel, Base):
         amenities = relationship("Amenity", secondary="place_amenity",
                                  backref="place_amenities",
                                  viewonly=False)
-    else:
+else:
+
+    class Place(BaseModel):
         city_id = ""
         user_id = ""
         name = ""

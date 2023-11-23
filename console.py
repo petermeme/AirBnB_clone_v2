@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
-import re
 import sys
-
-from models.base_model import BaseModel
+import re
+from models.base_model import BaseModel, Base
 from models.__init__ import storage
 from models.user import User
 from models.place import Place
@@ -18,14 +17,14 @@ class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
     # determines prompt for interactive/non-interactive modes
-    prompt = '(hbnb) '
+    prompt = '(hbnb) ' 
 
     classes = {
                'BaseModel': BaseModel, 'User': User, 'Place': Place,
                'State': State, 'City': City, 'Amenity': Amenity,
                'Review': Review
               }
-    # dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
+    dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
              'max_guest': int, 'price_by_night': int,
@@ -75,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
+                    if pline[0] is '{' and pline[-1] is'}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -95,47 +94,45 @@ class HBNBCommand(cmd.Cmd):
         return stop
 
     def do_quit(self, command):
-        """Method to exit the HBNB console"""
+        """ Method to exit the HBNB console"""
         exit()
 
     def help_quit(self):
-        """ Prints the help documentation for quit"""
+        """ Prints the help documentation for quit  """
         print("Exits the program with formatting\n")
 
     def do_EOF(self, arg):
-        """Handles EOF to exit program"""
+        """ Handles EOF to exit program """
         print()
         exit()
 
     def help_EOF(self):
         """ Prints the help documentation for EOF """
         print("Exits the program without formatting\n")
-        
-    def emptyline(self):
-        """ Overrides the emptyline method of CMD"""
-        pass
 
-    def do_quit(self, arg):
-        return True
+    def emptyline(self):
+        """ Overrides the emptyline method of CMD """
+        pass
 
     def do_create(self, args):
         """ Create an object of any class"""
+        print(args)
         if not args:
             print("** class name missing **")
             return
-        new_args = args.split()
-        if new_args[0] not in HBNBCommand.classes:
+        list_args = args.split()
+        if list_args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        class_name = HBNBCommand.classes[new_args[0]]
+        class_name = HBNBCommand.classes[list_args[0]]
         new_instance = class_name()
-        for arg in new_args[1:]:
+        for arg in list_args[1:]:
             key, value = arg.split("=")
             if key in class_name.__dict__:
                 value = type(class_name.__dict__[key])(value)
-            if type(value) is str:
-                value = value[1:len(value) - 1].replace('_', ' ').replace('\\"', '"')
-                
+                if type(value) is str:
+                    value = value[1:len(value) - 1].replace('_', ' ')
+                setattr(new_instance, key, value)
         storage.save()
         print(new_instance.id)
         storage.save()
@@ -286,7 +283,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] == '\"':  # check for quoted arg
+            if args and args[0] is '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -294,10 +291,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] != ' ':
+            if not att_name and args[0] is not ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] == '\"':
+            if args[2] and args[2][0] is '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
@@ -333,23 +330,6 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
-
-    """
-    def onecmd(self, line):
-        Override to handle advanced commands
-        if line in ['all', '.all()']:
-            return self.do_all("")
-        pattern = r"([a-zA-Z]*)\.(all|count|show|destroy|update)"
-        match = re.search(pattern, line)
-        if match:
-            klas = match.group(1)
-            if not klas:
-                return print("** class name missing **")
-            elif klas not in self.__classes:
-                return print("** class doesn't exist **")
-            line = self.parse_line(line, klas)
-        return super(HBNBCommand, self).onecmd(line)
-        """
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
