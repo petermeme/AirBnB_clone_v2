@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 """
 Deletes out-of-date archives
 fab -f 100-clean_web_static.py do_clean:number=2
@@ -8,26 +8,24 @@ fab -f 100-clean_web_static.py do_clean:number=2
     import os
     from fabric.api import *
 
-    env.hosts = ['52.87.155.66', '54.89.109.87']
+    env.hosts = ['54.236.49.157', '54.237.224.153']
 
 
     def do_clean(number=0):
-            """Delete out-of-date archives.
-                Args:
-                        number (int): The number of archives to keep.
-                            If number is 0 or 1, keeps only the most recent archive. If
-                                number is 2, keeps the most and second-most recent archives,
-                                    etc.
-                                        """
-                                            number = 1 if int(number) == 0 else int(number)
-
-                                                archives = sorted(os.listdir("versions"))
-                                                    [archives.pop() for i in range(number)]
-                                                        with lcd("versions"):
-                                                                    [local("rm ./{}".format(a)) for a in archives]
-
-                                                                        with cd("/data/web_static/releases"):
-                                                                                archives = run("ls -tr").split()
-                                                                                        archives = [a for a in archives if "web_static_" in a]
-                                                                                                [archives.pop() for i in range(number)]
-                                                                                                        [run("rm -rf ./{}".format(a)) for a in archives]
+        """Delete out-of-date archives.
+        Args:
+        number (int): The number of archives to keep.
+        If number is 0 or 1, keeps only the most recent archive. If
+        number is 2, keeps the most and second-most recent archives,
+        etc.
+        """
+        number = 1 if int(number) == 0 else int(number)
+        archives = sorted(os.listdir("versions"))
+        [archives.pop() for i in range(number)]
+        with lcd("versions"):
+            [local("rm ./{}".format(a)) for a in archives]
+            with cd("/data/web_static/releases"):
+                archives = run("ls -tr").split()
+                archives = [a for a in archives if "web_static_" in a]
+                [archives.pop() for i in range(number)]
+                [run("rm -rf ./{}".format(a)) for a in archives]

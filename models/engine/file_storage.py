@@ -40,6 +40,10 @@ class FileStorage:
                 del self.__objects[key]
         self.save()
 
+    def close(self):
+        """call reload() method for deserializing the JSON file to objects"""
+        self.reload()
+
     def reload(self):
         """Loads storage dictionary from file"""
         from models.base_model import BaseModel
