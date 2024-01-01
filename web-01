@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# Bash script that uses ssh to connect to your server using the private key
-ssh-copy-id -i ~/.ssh/id_rsa ubuntu@54.237.37.157
-ssh -i ~/.ssh/id_rsa ubuntu@54.237.37.157
