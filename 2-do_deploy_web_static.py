@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 env.use_ssh_config = True
-env.hosts = ['54.236.49.157', '54.237.224.153']
+env.hosts = ['100.25.110.237', '100.25.168.161']
 env.user='ubuntu'
 
 
